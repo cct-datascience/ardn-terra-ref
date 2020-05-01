@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "datafiles": [],
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 1,
+      "totalPages": 1
+    },
+    "status": []
+  },
+  "result": {
+    "documentationURL": "https://docs.terraref.org",
+    "endDate": "2017-09-21",
+    "location": {
+      "altitude": 0,
+      "countryCode": "USA",
+      "latitude": 33.0754905075,
+      "locationDbId": "6000000001",
+      "longitude": -111.97494509559,
+      "name": "MAC Field Scanner Field"
+    },
+    "seasons": [
+      {
+        "season": "MAC Season 4",
+        "seasonDbId": "a8317fa6b59bfa8cfe29004423f5613b",
+        "year": "2017"
+      }
+    ],
+    "startDate": "2017-04-13",
+    "statisticalDesign": {
+      "description": "Biomass Association Panel (BAP), 350 accessions in 2 replicates constrained by 3 height blocks.    The Biomass Association Panel is described by Brenton, ZW et al.  2016.  A genomic resource for the development, improvement, and exploitation of sorghum for bioenergy.  Genetics 204: 21-33.   A late season drought experiment along drip lines was established as part of the field campaigns in the latter part of season 4. This was not a pre-planned drought study, and only temporary water limited zones for the field campaign. There were two treatments. Irrigation was turned off during the first two weeks of August in the first treatment and irrigation was turned off during the second two weeks of August in the second treatment. Additional discussion can be found in https://github.com/terraref/reference-data/issues/196."
+    },
+    "studyDbId": "6000000010",
+    "studyName": "All BAP With Late Season Drought",
+    "studyTypeName": "Phenotyping Study"
+  }
+}
