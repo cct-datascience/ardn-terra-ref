@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "datafiles": [],
+    "pagination": {
+      "currentPage": 0,
+      "pageSize": 1000,
+      "totalCount": 2,
+      "totalPages": 1
+    },
+    "status": []
+  },
+  "result": {
+    "data": [
+      {
+        "observationUnitName": "MAC Field Scanner Season 4 Range 13 Column 11",
+        "observations": [
+          {
+            "observationDbId": "6001965924",
+            "observationTimeStamp": "2017-09-15T05:00:00Z",
+            "observationVariableDbId": "6000000196",
+            "observationVariableName": "aboveground_dry_biomass",
+            "operator": "Newcomb, Maria",
+            "quality": "unchecked",
+            "replicate": 6000031146,
+            "value": "25900"
+          },
+          {
+            "observationDbId": "6001965924",
+            "observationTimeStamp": "2017-09-15T05:00:00Z",
+            "observationVariableDbId": "6000000196",
+            "observationVariableName": "aboveground_dry_biomass",
+            "operator": "Newcomb, Maria",
+            "quality": "unchecked",
+            "replicate": 6000031146,
+            "value": "25900"
+          }
+        ],
+        "seasonDbId": "a8317fa6b59bfa8cfe29004423f5613b",
+        "studyDbId": "6000000010",
+        "treatmentDbId": 6000000026,
+        "treatments": [
+          {
+            "factor": "MAC Season 4: BAP water-deficit stress Aug 15-30",
+            "modality": "Between Aug 15-30, experimental plots in Cols 2, 3, 4, 9, 10, 11 and border plots in Col 1 were established as water-deficit blocks with no irrigation (by capping drip lines)."
+          }
+        ]
+      }
+    ]
+  }
+}
