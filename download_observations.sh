@@ -1,0 +1,1 @@
+curl --insecure -o observations_plot1311.json 'https://brapi.workbench.terraref.org/brapi/v1/observationunits?observationVariableDbId=6000000196&observationUnitDbId=MAC%20Field%20Scanner%20Season%204%20Range%2013%20Column%2011'

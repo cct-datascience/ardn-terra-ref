@@ -11,3 +11,9 @@ For **species** per study:
 bash download_germplasm.sh
 ```
 See genus and species. 
+
+For **observations** per plot: 
+```
+bash download_observations.sh
+```
+See value. 
