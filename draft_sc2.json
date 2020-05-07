@@ -1,0 +1,122 @@
+{
+  "mapping_info": {
+    "mapping_author": "cvillalobos@ufl.edu",
+    "source_url": "https://terraref.org",
+    "comments": [
+      "This is a DRAFT proposal",
+      "Working on mapping internally",
+      "Assign static variables in variables block",
+      "Variables can also be assigned dynamically",
+      "Terraref needs to implement variables endpoint"
+    ]
+  },
+  "dataset_metadata": {},
+  "agmip_translation_mapping": {
+    "variables": [
+      {
+        "assign": "$0",
+        "value": [
+          "6000000010",
+          "6000000034"
+        ]
+      }
+    ],
+    "endpoints": [
+      {
+        "endpoint_metadata": {
+          "endpoint_url": "/brapi/v1/variables/$$"
+        },
+        "mappings": [
+          {
+            "lookup": "6000000196",
+            "assign": "$hwah",
+            "key": "result/scale/name"
+          }
+        ]
+      },
+      {
+        "endpoint_metadata": {
+          "endpoint_url": "/brapi/v1/studies/$0"
+        },
+        "mappings": [
+          {
+            "icasa": "SDATE",
+            "key": "result/startDate",
+            "unit": "date",
+            "date_format": "yyyy-mm-dd"
+          },
+          {
+            "icasa": "FLELE",
+            "key": "result/location/altitude",
+            "unit": "m"
+          },
+          {
+            "icasa": "FL_LAT",
+            "key": "result/location/latitude",
+            "unit": "decimal_degrees"
+          },
+          {
+            "icasa": "FL_LONG",
+            "key": "result/location/longitude",
+            "unit": "decimal_degrees"
+          },
+          {
+            "icasa": "FL_NAME",
+            "key": "result/location/name"
+          },
+          {
+            "icasa": "PLYR",
+            "key": "result/seasons/year"
+          },
+          {
+            "icasa": "SUITE_NAME",
+            "key": "result/studyName"
+          },
+          {
+            "icasa": "EXNAME",
+            "key": "result/seasons/season"
+          }
+        ]
+      },
+      {
+        "endpoint_metadata": {
+          "endpoint_url": "/brapi/v1/studies/$0/germplasm"
+        },
+        "mappings": [
+          {
+            "icasa": "crid",
+            "key": "result/data/commonCropName,",
+            "codefield": "crop_codes",
+            "codekey": "common_name"
+          },
+          {
+            "icasa": "cul_notes",
+            "key": "result/data/germplasmPUI"
+          }
+        ]
+      },
+      {
+        "endpoint_metadata": {
+          "endpoint_url": "/brapi/v1/observationunits?studyDbId=$0"
+        },
+        "mappings": [
+          {
+            "icasa": "DATE",
+            "key": "result/data/observations/observationTimeStamp",
+            "unit": "date",
+            "date_format": "yyyy-MM-dd'T'kk:mm:ss'Z'"
+          },
+          {
+            "applyif": {
+              "key": "result/data/observations/observationVariableName",
+              "value": "aboveground_dry_biomass"
+            },
+            "icasa": "HWAH",
+            "key": "result/data/observations/value",
+            "units": "$hwah"
+          }
+        ]
+      }
+    ]
+  }
+}
