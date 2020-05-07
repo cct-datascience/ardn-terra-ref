@@ -16,7 +16,7 @@ season_id <- season_ids$seasonDbId[1]
 studies <- fromJSON("https://brapi.workbench.terraref.org/brapi/v1/studies")
 study <- studies$result$data %>% 
   filter(purrr::map_lgl(seasons, ~ all(season_id %in% .x))) %>% 
-  slice(1)
+  slice(2)
 
 # Variable 1: location
 c(study$location$latitude, study$location$longitude)
@@ -33,15 +33,13 @@ species <- fromJSON(species_url)
 # Variable 2: species
 paste(unique(species$result$data$genus), unique(species$result$data$species))
 
-# biomass values for one plot
-plot_ex <- "MAC%20Field%20Scanner%20Season%204%20Range%2013%20Column%2011"
 
 dry_biomass_id <- 6000000196
 dry_biomass_url <- paste0(base_url, "observationunits", "?", 
-                           "observationVariableDbId=", dry_biomass_id, "&", 
-                           "observationUnitDbId=", plot_ex)
+                          "observationVariableDbId=", dry_biomass_id, "&", 
+                          "studyDbId=", study$studyDbId)
 dry_biomass_json <- fromJSON(dry_biomass_url)
-dry_biomass_observations <- dry_biomass_json$result$data$observations[[1]] %>% 
+dry_biomass_observations <- dplyr::bind_rows(dry_biomass_json$result$data$observations) %>% 
   distinct(observationDbId, .keep_all = TRUE)
 dry_biomass_df <- data.frame(latitude = study$location$latitude, 
                              longitude = study$location$longitude, 
@@ -54,4 +52,4 @@ dry_biomass_df <- data.frame(latitude = study$location$latitude,
 dry_biomass_observations$value
 
 # Save data as CSV
-write.csv(dry_biomass_df, file = "ardn_mvp.csv")
+write.csv(dry_biomass_df, file = "ardn_mvp.csv", row.names = FALSE)

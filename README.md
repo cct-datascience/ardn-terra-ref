@@ -12,7 +12,7 @@ bash download_germplasm.sh
 ```
 See genus and species. 
 
-For **observations** per plot: 
+For **observations** per study: 
 ```
 bash download_observations.sh
 ```
