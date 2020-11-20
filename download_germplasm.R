@@ -5,8 +5,11 @@ library(jsonlite)
 studies <- c(6000000010, 6000000034)
 
 ###### Download, reformat, and save JSON file for each study ######
-germplasm_base_url <- "https://brapi.workbench.terraref.org/brapi/v1/studies"
-
+base_url <- Sys.getenv("BASEURL")
+if(is.null(base_url)){
+  base_url <- "https://terraref.org"
+}
+germplasm_base_url <- paste0(base_url, "/brapi/v1/studies")
 
 #https://brapi.workbench.terraref.org/brapi/v1/studies/$studyID/germplasm
 

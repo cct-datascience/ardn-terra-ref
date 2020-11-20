@@ -1,19 +1,16 @@
-## How to get variables
+## Code to query data from TERRA REF for ARDN Project 
 
-For **location**, **planting date**, and **harvest date** per study: 
-```
-bash download_studies.sh
-```
-See latitude, longitude, startDate, and endDate. 
+Learn more about ARDN https://agmip.github.io/ARDN/
 
-For **species** per study: 
-```
-bash download_germplasm.sh
-```
-See genus and species. 
+To run in R console:
 
-For **observations** per study: 
+If developing the API on your computer, make sure to set the base_url. By 
+default it will point to [terraref.org](https://terraref.org)
+
+```R
+#Sys.setenv(BASEURL='https://terraref.org')
+Sys.setenv(BASEURL='http://localhost:5000')
+source('download_studies.R')
+source('download_germplasm.R')
+source('download_observations.R')
 ```
-bash download_observations.sh
-```
-See value. 
