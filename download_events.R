@@ -7,7 +7,7 @@ studies <- c(6000000010, 6000000034)
 ###### Download, reformat, and save JSON file for each study ######
 base_url <- Sys.getenv("BASEURL")
 if(is.null(base_url)){
-  base_url <- "http://localhost:5000" #todo: modify to actual URL once events endpoint deployed
+  base_url <- "https://terraref.org" 
 }
 
 events_base_url <- paste0(base_url, "/brapi/v1/events")
