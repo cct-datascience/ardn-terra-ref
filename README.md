@@ -1,4 +1,4 @@
-## Code to query data from TERRA REF for ARDN Project 
+## Code to query data from TERRA REF from BrAPI for the ARDN Project 
 
 Learn more about ARDN https://agmip.github.io/ARDN/
 
