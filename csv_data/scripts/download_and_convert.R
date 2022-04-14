@@ -6,31 +6,44 @@ library(tidyr)
 ###### Set constants ######
 base_url <- "https://brapi.workbench.terraref.org/brapi/v1/"
 studies <- c("6000000010", "6000000034")
-var_ids <- c("6000000196", "6000000012")
+var_ids <- c("6000000196", "6000000007", "6000000354")
 
 ###### Table 2: Observations (FieldObs) ######
 get_observations <- function(var_id, study_id) {
+  pagesize_url <- paste0(base_url, "observationunits", "?studyDbId=", study_id,
+                         "&observationVariableDbId=", var_id, "&pageSize=2")
+  pagesize_download <- fromJSON(pagesize_url)
+  pagesize_count <- pagesize_download$metadata$pagination$totalCount
   var_url <- paste0(base_url, "observationunits", "?", "observationVariableDbId=", 
-                    var_id, "&", "studyDbId=", study_id)
+                    var_id, "&", "studyDbId=", study_id, "&pageSize=", pagesize_count)
   var_json <- fromJSON(var_url)
   var_df <- var_json$result$data %>% 
     unnest(observations) %>% 
     unnest(treatments) %>% 
-    select(observationunitDbId, observationVariableName, value, germplasmName, observationTimeStamp, studyDbId, observationUnitName) %>% 
-    rename(!!.$observationVariableName[1] := value, 
-           !!paste0("time_stamp_", .$observationVariableName[1]) := observationTimeStamp) %>% 
-    select(-observationVariableName)
+    select(observationunitDbId, observationVariableName, value, germplasmName, 
+           observationTimeStamp, studyDbId, observationUnitName) %>% 
+    rename(!!.$observationVariableName[1] := value) %>% 
+    select(-observationVariableName, -observationUnitName) %>% 
+    mutate(observationTimeStamp = substr(observationTimeStamp, 1, 10))
   return(var_df)
 }
 
-biomass_obs <- get_observations(var_ids[1], studies[1])
-cover_obs <- get_observations(var_ids[2], studies[1])
-obs_table <- left_join(biomass_obs, cover_obs, by = c("observationUnitName", 
-                                                      "observationunitDbId", 
-                                                      "germplasmName", 
-                                                      "studyDbId")) %>%
-  relocate(studyDbId, observationUnitName, observationunitDbId, germplasmName, 
-           starts_with("time_stamp_"))
+var_obs_list <- c()
+for(var in var_ids){
+  var_obs <- c()
+  for(study in studies){
+    tryCatch({
+      study_var_obs <- get_observations(var, study)
+      var_obs <- rbind(study_var_obs, var_obs)
+    }, error = function(e) e)
+  }
+  var_obs_list[[var]] <- var_obs
+}
+obs_table <- var_obs_list %>% purrr::reduce(full_join, by = c("observationunitDbId", 
+                                                         "germplasmName", 
+                                                         "studyDbId", 
+                                                         "observationTimeStamp")) %>%
+  relocate(studyDbId, observationunitDbId, germplasmName, observationTimeStamp)
 
 ###### Table 2: Studies (Metadata) ######
 studies_url <- paste0(base_url, "studies")
@@ -42,8 +55,6 @@ studies_table$longitude <- studies_table$location$longitude
 studies_table$description <- studies_table$statisticalDesign$description
 studies_table <- studies_table %>% 
   select(studyDbId, startDate, endDate, latitude, longitude, description)
-
-
 
 ###### Table 3: Germplasm (no analog) ######
 germplasms_table <- c()
