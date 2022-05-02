@@ -62,7 +62,7 @@ for (study in studies) {
   germplasm_url <- paste0(base_url, "studies/", study[1], "/germplasm")
   germplasm_json <- fromJSON(germplasm_url)
   germplasm_table <- germplasm_json$result$data %>% 
-    select(germplasmDbId, germplasmName, genus, species, subtaxa, commonCropName)
+    select(germplasmDbId, germplasmName, commonCropName)
   germplasms_table <- bind_rows(germplasm_table, germplasms_table)
 }
 
@@ -76,8 +76,9 @@ for (study in studies) {
     unnest(eventParameters) %>% 
     pivot_wider(names_from = key, values_from = value) %>% 
     unnest(observationUnitDbIds) %>% 
-    select(-eventDbId) %>% 
-    relocate(observationUnitDbIds, studyDbId)
+    select(-eventDbId, -level, -units) %>% 
+    relocate(observationUnitDbIds, studyDbId) %>% 
+    rename(observationunitDbId = observationUnitDbIds)
   events_table <- bind_rows(event_table, events_table)
 }
 
