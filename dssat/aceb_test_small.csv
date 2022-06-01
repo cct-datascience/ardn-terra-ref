@@ -25,7 +25,7 @@
 #,pdate,,,,,,,,,
 2,event,planting,pdate,4/25/2018,PLTID,6000014594,EID,6000000034,EV_NOTES,"Sorghum BAP experiment planted: 336 accessions randomized in a row-column experimental design in two replicate blocks plus two uniformity ranges of 14 plots at each end of the field, for a total of 700 experimental 2-row plots.  "
 #,pdate,,,,,,,,,
-10,event,planting,pdate,4/25/2018,PLTID,6000014577,EID,6000000034,EV_NOTES,"Sorghum BAP experiment planted: 336 accessions randomized in a row-column experimental design in two replicate blocks plus two uniformity ranges of 14 plots at each end of the field, for a total of 700 experimental 2-row plots.  "
+!,event,planting,pdate,4/25/2018,PLTID,6000014577,EID,6000000034,EV_NOTES,"Sorghum BAP experiment planted: 336 accessions randomized in a row-column experimental design in two replicate blocks plus two uniformity ranges of 14 plots at each end of the field, for a total of 700 experimental 2-row plots.  "
 !,germplasms_table.csv,,,,,,,,,
 !,Sheet1,,,,,,,,,
 #,CUL_ID,CUL_NAME,CRID,,,,,,,
