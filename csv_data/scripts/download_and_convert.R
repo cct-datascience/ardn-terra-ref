@@ -67,97 +67,58 @@ for (study in studies) {
 }
 
 ###### Table 4: Events (Fertilizer) ######
-#TODO: pull data from updated Brapi events endpoint
+#TODO: replace URL with one from repo main after PR is merged
+events_url <- "https://raw.githubusercontent.com/terraref/brapi/734a4417a1420f1648012f8da799f9ef74c7b10f/data/events.json"
+events_json <- fromJSON(events_url)
 
-old_events_hand_fp <- "../../TERRA_REF/brapi_terraref_repo/brapi/data/events.json"
-events_hand_fp <- "csv_data/data/events.json"
-eventParameters_cols <- c("code", "name", "description", "unit", "...1", "value", "codeValueDescription", "valuesByDate") #"value",
-events_hand <- fromJSON(events_hand_fp) %>% 
-  unnest(observationUnitDbId) %>% 
-  unnest_wider(eventParameters) %>% 
-  unnest(any_of(eventParameters_cols))
-  #unnest_wider isn't quite right
-# unnest by row and then rowbind back together? with missing columns included or something? 
-#expand observationunitdbid first and then event params/ICASA vars table? 
+eventParameters_cols <- c("code", "name", "description", "unit", "...1", "value", 
+                          "codeValueDescription", "valuesByDate", "parameterDescription")
+`%!in%` <- Negate(`%in%`)
 
-column_names <- c("code", "unit")
-
-#can't unnest value columns due to mix of character and list
-#what to do with date column? 
-View(events_hand %>% 
-  slice(11:12) %>% 
-  unnest(observationUnitDbId) %>% 
-  mutate(eventParameters = na_if(eventParameters, "NULL")) %>% 
-  unnest_wider(eventParameters) %>% 
-  unnest(any_of(eventParameters_cols)) %>% 
-  unnest(observationUnitDbId))
-
-#if there are discrete dates, one per value if there are multiple values? unnest together?
-#unnest rows with vectors in value conditionally, both discreteDates and value
-# mutate case when row is data type of list, turn into character?
-
-
-
-# mvp would be just planting and harvest eventTypes
-
-mult_dates_ex <- events_clean_all %>% filter(eventDbId == "6000000082" | eventDbId == "6000000052")
-View(mult_dates_ex %>% unnest(date$discreteDates))
-
-# 4, 7, 9, 10, 11, 17
-events_clean_all <- c()
-for(i in 1:17){
+events_table <- c()
+for(i in 1:nrow(events_json)){
   print(i)
-  events_clean <- events_hand %>% 
+  events_table_ind <- events_json %>% 
     slice(i) %>% 
-    unnest(observationUnitDbIds) %>% 
     mutate(eventParameters = na_if(eventParameters, "NULL")) %>% 
     unnest_wider(eventParameters) %>% 
     unnest(any_of(eventParameters_cols)) %>% 
     unpack(cols = c(date))
-  events_clean$discreteDates[sapply(events_clean$discreteDates, is.null)] <- NA
-  # number of items in discreteDates column differs from number of rows, then unnest column
-  if(length(unlist(events_clean$discreteDates)) != nrow(events_clean)){
-    events_clean <- events_clean %>%
+  events_table_ind$discreteDates[sapply(events_table_ind$discreteDates, is.null)] <- NA
+  if("discreteDates" %in% colnames(events_table_ind) & 
+     "valuesByDate" %!in% colnames(events_table_ind)){
+    events_table_ind <- events_table_ind %>%
       unnest(discreteDates)
   }
-  events_clean$discreteDates <- unlist(events_clean$discreteDates) #need to check if this screwed anything up
-  if("valuesByDate" %in% colnames(events_clean)){
-    events_clean <- events_clean %>% 
-      unnest(valuesByDate, keep_empty = TRUE)
+  if("valuesByDate" %in% colnames(events_table_ind)){
+    events_table_ind <- events_table_ind %>%
+      unnest(cols = c(discreteDates, valuesByDate))
   }
-  if("value" %in% colnames(events_clean)){
-    events_clean$value <- lapply(events_clean$value, as.character)
-    
+  if(class(events_table_ind$discreteDates) == "list"){
+    events_table_ind$discreteDates <- unlist(events_table_ind$discreteDates)
   }
-  if("codeValueDescription" %in% colnames(events_clean)){
-    events_clean$codeValueDescription <- lapply(events_clean$codeValueDescription, as.character)
-  }
-  if("parameterDescription" %in% colnames(events_clean)){
-    events_clean$parameterDescription <- lapply(events_clean$parameterDescription, as.character)
-    
-  }
-  
-  #print(data.frame(sapply(events_clean, typeof)))
-  #print(events_clean$value)
-  events_clean_all <- bind_rows(events_clean, events_clean_all)
-}
-# events_clean_all <- events_clean_all %>% 
-#   mutate_all(~na_if(., "NULL"))
+  events_table_ind <- events_table_ind %>% 
+    unnest(observationUnitDbIds)
+  if("value" %in% colnames(events_table_ind)){
+    events_table_ind$value <- lapply(events_table_ind$value, as.character)
 
-events_table <- c()
-for (study in studies) {
-  event_url <- paste0(base_url, "events?studyDbId=", study)
-  event_json <- fromJSON(event_url)
-  event_table <- event_json$result$data %>% 
-    unnest(eventParameters) %>% 
-    unnest(eventParameters) %>% 
-    pivot_wider(names_from = key, values_from = value) %>% 
-    unnest(observationUnitDbIds) %>% 
-    select(-eventDbId, -level, -units) %>% 
-    relocate(observationUnitDbIds, studyDbId) %>% 
-    rename(observationunitDbId = observationUnitDbIds)
-  events_table <- bind_rows(event_table, events_table)
+  }
+  if("codeValueDescription" %in% colnames(events_table_ind)){
+    events_table_ind$codeValueDescription <- lapply(events_table_ind$codeValueDescription, as.character)
+  }
+  if("parameterDescription" %in% colnames(events_table_ind)){
+    events_table_ind$parameterDescription <- lapply(events_table_ind$parameterDescription, as.character)
+
+  }
+  events_table <- bind_rows(events_table_ind, events_table)
 }
+
+events_table <- events_table %>%
+  mutate(value = as.character(value)) %>% 
+  mutate(codeValueDescription = as.character(codeValueDescription)) %>% 
+  mutate(parameterDescription = as.character(parameterDescription)) %>% 
+  mutate_all(~na_if(., "NULL")) %>% 
+  select(-...16)
 
 ###### Save tables ######
 tables <- c("obs_table", "studies_table", "germplasms_table", "events_table")
