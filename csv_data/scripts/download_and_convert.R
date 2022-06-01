@@ -121,9 +121,10 @@ events_table <- events_table %>%
   select(-...16)
 
 ###### Save tables ######
-tables <- c("obs_table", "studies_table", "germplasms_table", "events_table")
+tables <- c("obs_table", "studies_table", "germplasms_table")
 for (table in tables) {
   file_name <- paste0("csv_data/data/", table, ".csv")
   write.csv(eval(as.symbol(table)), file = file_name, 
             row.names = FALSE)
 }
+readr::write_csv(events_table, "csv_data/data/events_table.csv.gz")
