@@ -1,0 +1,13 @@
+*Summary of files opened during simulation
+
+Unit  File
+Num.  Variable Name
+*DSSAT Cropping System Model Ver. 4.7.5.008   -release    MAY 31, 2022; 11:37:36
+
+ Unit  Filename
+  501  OPCLR
+   21  FILEIO
+   14  BATCH 
+  113  ERRORO
+   15  ERRORX
+  118  WARNING.OUT
