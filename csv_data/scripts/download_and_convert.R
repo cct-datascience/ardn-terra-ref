@@ -118,7 +118,14 @@ events_table <- events_table %>%
   mutate(codeValueDescription = as.character(codeValueDescription)) %>% 
   mutate(parameterDescription = as.character(parameterDescription)) %>% 
   mutate_all(~na_if(., "NULL")) %>% 
-  select(-...16)
+  select(-...16) %>% 
+  select(!c(eventDbId, endDate, name, unit, codeValueDescription, parameterDescription)) %>% 
+  unite("value", c(value, valuesByDate), na.rm = TRUE) %>% 
+  mutate(value = replace(value, value == "", NA)) %>% 
+  unite(date, c(discreteDates, startDate), na.rm = TRUE) %>% 
+  mutate(row = row_number()) %>% 
+  pivot_wider(names_from = code, values_from = value) %>% 
+  select(-row)
 
 ###### Save tables ######
 tables <- c("obs_table", "studies_table", "germplasms_table")
