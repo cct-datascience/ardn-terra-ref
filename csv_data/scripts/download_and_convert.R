@@ -68,7 +68,7 @@ for (study in studies) {
 
 ###### Table 4: Events (Fertilizer) ######
 #TODO: replace URL with one from repo main after PR is merged
-events_url <- "https://raw.githubusercontent.com/terraref/brapi/734a4417a1420f1648012f8da799f9ef74c7b10f/data/events.json"
+events_url <- "https://raw.githubusercontent.com/terraref/brapi/b89b5535a759f3f78af76609303f3bf1278286c0/data/events.json"
 events_json <- fromJSON(events_url)
 
 eventParameters_cols <- c("code", "name", "description", "unit", "...1", "value", 
