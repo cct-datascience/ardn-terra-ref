@@ -4,7 +4,7 @@ library(dplyr)
 library(tidyr)
 
 ###### Set constants ######
-base_url <- "https://brapi.workbench.terraref.org/brapi/v1/"
+base_url <- "https://terraref.org/brapi/v1/"
 studies <- c("6000000010", "6000000034")
 var_ids <- c("6000000196", "6000000007", "6000000354")
 
@@ -69,8 +69,13 @@ for (study in studies) {
 ###### Table 4: Events (Fertilizer) ######
 events_table <- c()
 for (study in studies) {
-  event_url <- paste0(base_url, "events?studyDbId=", study)
-  event_json <- fromJSON(event_url)
+  ## if reading from API
+  # event_url <- paste0(base_url, "events?studyDbId=", study)
+  #event_json1 <- fromJSON(event_url)
+  
+  ## if reading from file
+  event_file <- paste0('json_data/data/events_',study,'.json')
+  event_json <- jsonlite::fromJSON(event_file)
   event_table <- event_json$result$data %>% 
     unnest(eventParameters) %>% 
     unnest(eventParameters) %>% 
