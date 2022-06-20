@@ -40,7 +40,7 @@ Learn more about ARDN https://agmip.github.io/ARDN/
 - obs_table <-> events_table: observationunitDbId/observationUnitDbIds
 - obs_table <-> germplasms_table: germplasmName
 
-![](table_relationships.png)
+![](tables_relationships.png)
 
 #### To run code in R console
 
