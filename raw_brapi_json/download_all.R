@@ -7,13 +7,15 @@ studies <- c(6000000010, 6000000034)
 ###### Download and save JSON file for each endpoint and study ######
 base_url <- "https://terraref.org" 
 
-events_base_url <- paste0(base_url, "/brapi/v1/events")
-for(study in studies){
-  events_url <- paste0(events_base_url, "?studyDbId=", study)
-  events_list <- fromJSON(events_url)
-  write(toJSON(events_list, pretty = TRUE, auto_unbox = TRUE), 
-        file = paste0("raw_brapi_json/events_", study, ".json"))
-}
+## Events JSON files were hand created and 
+## are in the raw_brapi_json folder 
+# events_base_url <- paste0(base_url, "/brapi/v1/events")
+# for(study in studies){
+#   events_url <- paste0(events_base_url, "?studyDbId=", study)
+#   events_list <- fromJSON(events_url)
+#   write(toJSON(events_list, pretty = TRUE, auto_unbox = TRUE), 
+#         file = paste0("raw_brapi_json/events_", study, ".json"))
+# }
 
 study_base_url <- paste0(base_url, "/brapi/v1/studies")
 for(study in studies){
