@@ -62,34 +62,76 @@ for (study in studies) {
   germplasm_url <- paste0(base_url, "studies/", study[1], "/germplasm")
   germplasm_json <- fromJSON(germplasm_url)
   germplasm_table <- germplasm_json$result$data %>% 
-    select(germplasmDbId, germplasmName, genus, species, subtaxa, commonCropName)
+    select(germplasmDbId, germplasmName, commonCropName)
   germplasms_table <- bind_rows(germplasm_table, germplasms_table)
 }
 
 ###### Table 4: Events (Fertilizer) ######
+#TODO: replace URL with one from repo main after PR is merged
+events_url <- "https://raw.githubusercontent.com/terraref/brapi/b89b5535a759f3f78af76609303f3bf1278286c0/data/events.json"
+events_json <- fromJSON(events_url)
+
+eventParameters_cols <- c("code", "name", "description", "unit", "...1", "value", 
+                          "codeValueDescription", "valuesByDate", "parameterDescription")
+`%!in%` <- Negate(`%in%`)
+
 events_table <- c()
-for (study in studies) {
-  ## if reading from API
-  # event_url <- paste0(base_url, "events?studyDbId=", study)
-  #event_json1 <- fromJSON(event_url)
-  
-  ## if reading from file
-  event_file <- paste0('json_data/data/events_',study,'.json')
-  event_json <- jsonlite::fromJSON(event_file)
-  event_table <- event_json$result$data %>% 
-    unnest(eventParameters) %>% 
-    unnest(eventParameters) %>% 
-    pivot_wider(names_from = key, values_from = value) %>% 
-    unnest(observationUnitDbIds) %>% 
-    select(-eventDbId) %>% 
-    relocate(observationUnitDbIds, studyDbId)
-  events_table <- bind_rows(event_table, events_table)
+for(i in 1:nrow(events_json)){
+  print(i)
+  events_table_ind <- events_json %>% 
+    slice(i) %>% 
+    mutate(eventParameters = na_if(eventParameters, "NULL")) %>% 
+    unnest_wider(eventParameters) %>% 
+    unnest(any_of(eventParameters_cols)) %>% 
+    unpack(cols = c(date))
+  events_table_ind$discreteDates[sapply(events_table_ind$discreteDates, is.null)] <- NA
+  if("discreteDates" %in% colnames(events_table_ind) & 
+     "valuesByDate" %!in% colnames(events_table_ind)){
+    events_table_ind <- events_table_ind %>%
+      unnest(discreteDates)
+  }
+  if("valuesByDate" %in% colnames(events_table_ind)){
+    events_table_ind <- events_table_ind %>%
+      unnest(cols = c(discreteDates, valuesByDate))
+  }
+  if(class(events_table_ind$discreteDates) == "list"){
+    events_table_ind$discreteDates <- unlist(events_table_ind$discreteDates)
+  }
+  events_table_ind <- events_table_ind %>% 
+    unnest(observationUnitDbIds)
+  if("value" %in% colnames(events_table_ind)){
+    events_table_ind$value <- lapply(events_table_ind$value, as.character)
+
+  }
+  if("codeValueDescription" %in% colnames(events_table_ind)){
+    events_table_ind$codeValueDescription <- lapply(events_table_ind$codeValueDescription, as.character)
+  }
+  if("parameterDescription" %in% colnames(events_table_ind)){
+    events_table_ind$parameterDescription <- lapply(events_table_ind$parameterDescription, as.character)
+
+  }
+  events_table <- bind_rows(events_table_ind, events_table)
 }
 
+events_table <- events_table %>%
+  mutate(value = as.character(value)) %>% 
+  mutate(codeValueDescription = as.character(codeValueDescription)) %>% 
+  mutate(parameterDescription = as.character(parameterDescription)) %>% 
+  mutate_all(~na_if(., "NULL")) %>% 
+  select(-...16) %>% 
+  select(!c(eventDbId, endDate, name, unit, codeValueDescription, parameterDescription)) %>% 
+  unite("value", c(value, valuesByDate), na.rm = TRUE) %>% 
+  mutate(value = replace(value, value == "", NA)) %>% 
+  unite(date, c(discreteDates, startDate), na.rm = TRUE) %>% 
+  mutate(row = row_number()) %>% 
+  pivot_wider(names_from = code, values_from = value) %>% 
+  select(-row)
+
 ###### Save tables ######
-tables <- c("obs_table", "studies_table", "germplasms_table", "events_table")
+tables <- c("obs_table", "studies_table", "germplasms_table")
 for (table in tables) {
   file_name <- paste0("csv_data/data/", table, ".csv")
   write.csv(eval(as.symbol(table)), file = file_name, 
             row.names = FALSE)
 }
+readr::write_csv(events_table, "csv_data/data/events_table.csv.gz")
