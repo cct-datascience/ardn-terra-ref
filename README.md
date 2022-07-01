@@ -34,7 +34,7 @@ Learn more about this project at the ARDN website here: https://agmip.github.io/
   - `AgMIP_Input.zip`: resulting csv file from apply sidecar to data csv files
   - `DOME/`
     - `Field_Overlay_s4.csv`: DSSAT-specific DOME file that contributes additional required inputs to run model
-    - `LINKAGE_s4_v2.csv`: DDSAT-specific linkage file that enables DOME file to be used
+    - `LINKAGE_s4_v2.csv`: DDSAT-specific linkage file that enables individual DOME files to be used for multiple experiments or seasons
   - `AgMIP_Input.aceb`: ACEB-format file
   - `dssat_input.zip`
   - `dssat_input/`: generated from above zip file; contains DSSAT-specific input files and model run output files; many files, only including ones that are used
@@ -56,3 +56,25 @@ Learn more about this project at the ARDN website here: https://agmip.github.io/
 - obs_table <-> germplasms_table: germplasmName
 
 ![](README_images/ARDN_tables_relational_diagram.jpg)
+
+### How to run DSSAT
+
+- Compile model locally (optional for Windows, required for Linux systems)
+  - These instructions assume model version is 4.8, so file names contain 48
+  - Clone source code from [dssat-csm-os](https://github.com/DSSAT/dssat-csm-os) repo
+  - Run make commands
+  - `dscsm048` is executable model file
+- Move additional data files into correct location
+  - Need DSSAT-specific files for cultivar (Sorghum), Arizona weather, and Arizona soils
+  - Copy `Data/` subfolder from `dssat-csm-os` repo, which has `Genotype/`, `Soil/` and `Weather/` subfolders
+  - Paste into path specified in `DSSATPRO.L48`; alternatively move relevant data files into main compiled model folder or change file paths in `DSSATPRO.L48`
+  - Data file suffix number should match model batch file suffix number, e.g., 48
+- Run model
+  - From DSSAT input files, generated in step 5 in pipeline, run `/path/to/dscsm048 b DSSBatch.v48`
+  - If successful, there will be no errors and a summary of all simulations can be viewed in `Summary.OUT`
+
+### References
+
+LeBauer, David et al. (2020), Data From: TERRA-REF, An open reference data set from high resolution genomics, phenomics, and imaging sensors, Dryad, Dataset, https://doi.org/10.5061/dryad.4b8gtht99
+
+Hoogenboom, G., C.H. Porter, K.J. Boote, V. Shelia, P.W. Wilkens, U. Singh, J.W. White, S. Asseng, J.I. Lizaso, L.P. Moreno, W. Pavan, R. Ogoshi, L.A. Hunt, G.Y. Tsuji, and J.W. Jones. 2019. The DSSAT crop modeling ecosystem. In: p.173-216 [K.J. Boote, editor] Advances in Crop Modeling for a Sustainable Agriculture. Burleigh Dodds Science Publishing, Cambridge, United Kingdom, http://dx.doi.org/10.19103/AS.2019.0061.10
