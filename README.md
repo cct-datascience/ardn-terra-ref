@@ -41,6 +41,7 @@ Learn more about this project at the ARDN website here: https://agmip.github.io/
     - `DSSBatch.v48`
     - `TERRAR01.SGX`
     - `Summary.OUT`
+- `azmet`: contains daily weather data (not used in DSSAT run yet)
 - `raw_brapi_json/`: (obsolete) contains R script for converting raw TERRA REF JSON files into format needed by collaborator, and resulting .json files
 - `json_data/scripts`: (obsolete) contains R scripts for converting raw TERRA REF JSON files into format needed by collaborator
 
@@ -56,6 +57,37 @@ Learn more about this project at the ARDN website here: https://agmip.github.io/
 - obs_table <-> germplasms_table: germplasmName
 
 ![](README_images/ARDN_tables_relational_diagram.jpg)
+
+### Generating DSSAT input files
+
+#### Web interface 
+
+Easiest to use, but less stable
+
+https://data.agmip.org/ardn/tools/data_factory
+
+#### Local program
+
+Download most recent version of QuadUI from https://github.com/MengZhang/quadui/releases
+
+Run QuadUI GUI
+
+```psl
+set PATH=C:\Program Files (x86)\Java\jre1.8.0_301\bin;%PATH%
+cd C:\Users\David\Downloads\QuadUI_v1.3.9-beta22
+.\QUADUI.BAT
+```
+
+Run QuadUI command line:
+
+
+```psl
+# to get help
+java -help quadui-1.3.9-beta22.jar
+java quadui-1.3.9-beta22.jar  -cli -help
+
+java -jar quadui-1.3.9-beta22.jar  -cli -DJ -f dome_filename.csv
+```
 
 ### How to run DSSAT
 

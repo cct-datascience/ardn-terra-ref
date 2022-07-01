@@ -4,7 +4,7 @@ library(dplyr)
 library(tidyr)
 
 ###### Set constants ######
-base_url <- "https://brapi.workbench.terraref.org/brapi/v1/"
+base_url <- "https://terraref.org/brapi/v1/"
 studies <- c("6000000010", "6000000034")
 var_ids <- c("6000000196", "6000000007", "6000000354")
 
