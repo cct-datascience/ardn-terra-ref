@@ -54,6 +54,9 @@ The following tables were generated from the `download_and_convert.R` script tha
 3. germplasms_table
 4. events_table
 
+
+Tables are linked by the following fields:
+
 - obs_table <-> studies_table: studyDbId
 - obs_table <-> events_table: observationunitDbId/observationUnitDbIds
 - obs_table <-> germplasms_table: germplasmName
