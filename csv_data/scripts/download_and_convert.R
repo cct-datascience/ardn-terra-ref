@@ -24,7 +24,9 @@ get_observations <- function(var_id, study_id) {
            observationTimeStamp, studyDbId, observationUnitName) %>% 
     rename(!!.$observationVariableName[1] := value) %>% 
     select(-observationVariableName, -observationUnitName) %>% 
-    mutate(observationTimeStamp = substr(observationTimeStamp, 1, 10))
+    mutate(observationTimeStamp = substr(observationTimeStamp, 1, 10), 
+           studyDbId = case_when(studyDbId == 6000000034 ~ "TERRAREF-----S4", 
+                                 studyDbId == 6000000010 ~ "TERRAREF-----S6"))
   return(var_df)
 }
 
@@ -43,7 +45,8 @@ obs_table <- var_obs_list %>% purrr::reduce(full_join, by = c("observationunitDb
                                                          "germplasmName", 
                                                          "studyDbId", 
                                                          "observationTimeStamp")) %>%
-  relocate(studyDbId, observationunitDbId, germplasmName, observationTimeStamp)
+  relocate(studyDbId, observationunitDbId, germplasmName, observationTimeStamp) %>% 
+  mutate_all(list(~replace_na(., "")))
 
 ###### Table 2: Studies (Metadata) ######
 studies_url <- paste0(base_url, "studies")
@@ -54,7 +57,10 @@ studies_table$latitude <- studies_table$location$latitude
 studies_table$longitude <- studies_table$location$longitude
 studies_table$description <- studies_table$statisticalDesign$description
 studies_table <- studies_table %>% 
-  select(studyDbId, startDate, endDate, latitude, longitude, description)
+  mutate(studyDbId = case_when(studyDbId == 6000000034 ~ "TERRAREF-----S4", 
+                               studyDbId == 6000000010 ~ "TERRAREF-----S6")) %>% 
+  select(studyDbId, startDate, endDate, latitude, longitude, description) %>% 
+  mutate_all(list(~replace_na(., "")))
 
 ###### Table 3: Germplasm (no analog) ######
 germplasms_table <- c()
@@ -63,16 +69,16 @@ for (study in studies) {
   germplasm_json <- fromJSON(germplasm_url)
   germplasm_table <- germplasm_json$result$data %>% 
     select(germplasmDbId, germplasmName, commonCropName)
-  germplasms_table <- bind_rows(germplasm_table, germplasms_table)
+  germplasms_table <- bind_rows(germplasm_table, germplasms_table) %>% 
+    mutate_all(list(~replace_na(., "")))
 }
 
 ###### Table 4: Events (Fertilizer) ######
-#TODO: replace URL with one from repo main after PR is merged
-events_url <- "https://raw.githubusercontent.com/terraref/brapi/b89b5535a759f3f78af76609303f3bf1278286c0/data/events.json"
+events_url <- "https://raw.githubusercontent.com/terraref/brapi/master/data/events.json"
 events_json <- fromJSON(events_url)
 
 eventParameters_cols <- c("code", "name", "description", "unit", "...1", "value", 
-                          "codeValueDescription", "valuesByDate", "parameterDescription")
+                          "valueDescription", "valuesByDate", "description")
 `%!in%` <- Negate(`%in%`)
 
 events_table <- c()
@@ -103,11 +109,11 @@ for(i in 1:nrow(events_json)){
     events_table_ind$value <- lapply(events_table_ind$value, as.character)
 
   }
-  if("codeValueDescription" %in% colnames(events_table_ind)){
-    events_table_ind$codeValueDescription <- lapply(events_table_ind$codeValueDescription, as.character)
+  if("valueDescription" %in% colnames(events_table_ind)){
+    events_table_ind$valueDescription <- lapply(events_table_ind$valueDescription, as.character)
   }
-  if("parameterDescription" %in% colnames(events_table_ind)){
-    events_table_ind$parameterDescription <- lapply(events_table_ind$parameterDescription, as.character)
+  if("description" %in% colnames(events_table_ind)){
+    events_table_ind$description <- lapply(events_table_ind$description, as.character)
 
   }
   events_table <- bind_rows(events_table_ind, events_table)
@@ -115,17 +121,20 @@ for(i in 1:nrow(events_json)){
 
 events_table <- events_table %>%
   mutate(value = as.character(value)) %>% 
-  mutate(codeValueDescription = as.character(codeValueDescription)) %>% 
-  mutate(parameterDescription = as.character(parameterDescription)) %>% 
+  mutate(valueDescription = as.character(valueDescription)) %>% 
+  mutate(description = as.character(description)) %>% 
   mutate_all(~na_if(., "NULL")) %>% 
   select(-...16) %>% 
-  select(!c(eventDbId, endDate, name, unit, codeValueDescription, parameterDescription)) %>% 
+  select(!c(eventDbId, endDate, name, unit, valueDescription, description)) %>% 
   unite("value", c(value, valuesByDate), na.rm = TRUE) %>% 
   mutate(value = replace(value, value == "", NA)) %>% 
   unite(date, c(discreteDates, startDate), na.rm = TRUE) %>% 
   mutate(row = row_number()) %>% 
   pivot_wider(names_from = code, values_from = value) %>% 
-  select(-row)
+  select(-row) %>% 
+  mutate(studyDbId = case_when(studyDbId == 6000000034 ~ "TERRAREF-----S4", 
+                               studyDbId == 6000000010 ~ "TERRAREF-----S6")) %>% 
+  mutate_all(list(~replace_na(., "")))
 
 ###### Save tables ######
 tables <- c("obs_table", "studies_table", "germplasms_table")
