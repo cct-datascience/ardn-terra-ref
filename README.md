@@ -65,6 +65,11 @@ Tables are linked by the following fields:
 
 ### Generating DSSAT input files
 
+The files above are used alongside the Side Car 2 (sc2) file to generate input files for crop models with the AgMIP 'Data Factory' web interface.  
+
+Here we use the Data Factory program to generate inputs for DSSAT, but note that it can also be used to generate input files for a number of other crop models, including
+APSIM and STICS.
+
 #### Web interface 
 
 Easiest to use, but less stable
