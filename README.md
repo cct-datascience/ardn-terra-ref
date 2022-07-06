@@ -22,7 +22,7 @@ Learn more about this project at the ARDN website here: https://agmip.github.io/
 ### Repository file structure
 
 - `csv_data/`
-  - `scripts/download_and_convert.R`: script downloads raw BrAPI TERRA REF JSON data from 4 endpoints (observationunits, studies, germplasm, and events) and converts to required csv format
+  - `scripts/download_and_convert.R`: script downloads raw BrAPI TERRA REF JSON data from 4 endpoints (observationunits, studies, germplasm, and events) and converts to required CSV format.
   - `data/`: contains converted csv data files
     - `studies_table.csv`
     - `obs_table.csv`
