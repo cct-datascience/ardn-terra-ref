@@ -45,7 +45,9 @@ Learn more about this project at the ARDN website here: https://agmip.github.io/
 - `raw_brapi_json/`: (obsolete) contains R script for converting raw TERRA REF JSON files into format needed by collaborator, and resulting .json files
 - `json_data/scripts`: (obsolete) contains R scripts for converting raw TERRA REF JSON files into format needed by collaborator
 
-### Keys for TERRA REF BrAPI csvs
+### Overview of relationships among tables provided as CSV files
+
+The following tables were generated from the `download_and_convert.R` script that turned BrAPI JSON into tables provided as CSV.
 
 1. obs_table
 2. studies_table
