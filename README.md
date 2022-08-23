@@ -41,7 +41,14 @@ Learn more about this project at the ARDN website here: https://agmip.github.io/
     - `DSSBatch.v48`
     - `TERRAR01.SGX`
     - `Summary.OUT`
-- `azmet`: contains daily weather data (not used in DSSAT run yet)
+- `azmet/`: contains daily weather data (not used in DSSAT run yet)
+- `irrigation/`: contains irrigation rates for Season 4 during the drought experiment
+  - `season_4_irrigation.csv`
+    - `day`: date in YYYY-MM-DD format
+    - `early_drought`: mm of water applied to plots in early drought treatment
+    - `late_drought`: mm of water applied to plots in late drought treatment
+    - note that these irrigation rates only differ for the Aug 1-14 (early drought) and Aug 15-31 (late drought) treatments
+  - `season_4_irrigation.csv`: raw data including gallons water per day and total area irrigated; to show calculations. Date and last two columns are identical to the three columns in the `season_4_irrigation_raw.csv` file  
 - `raw_brapi_json/`: (obsolete) contains R script for converting raw TERRA REF JSON files into format needed by collaborator, and resulting .json files
 - `json_data/scripts`: (obsolete) contains R scripts for converting raw TERRA REF JSON files into format needed by collaborator
 
