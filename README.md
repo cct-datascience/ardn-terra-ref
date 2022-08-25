@@ -1,6 +1,6 @@
 ## Harmonizing and modeling BrAPI TERRA REF data
 
-This repository contains code, data, and intermediate files for harmonizing [BrAPI TERRA REF data]() into the ARDN format and running it through the DSSAT model. This data modeling pipeline is outlined below. 
+This repository contains code, data, and intermediate files for harmonizing data from the TERRA-REF BrAPI endpoint into the ARDN format and running it through the DSSAT model. The data transformation pipeline is outlined below. 
 
 Learn more about this project at the ARDN website here: https://agmip.github.io/ARDN/
 
